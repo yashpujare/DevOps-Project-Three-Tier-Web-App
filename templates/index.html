@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exit Finder — Nearest Emergency Exit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">⛝</span>
+    <span class="brand-text">EXIT&nbsp;FINDER</span>
+  </div>
+  <div class="topbar-sub">Tap a spot on the floor plan to find the fastest route out</div>
+</header>
+
+<main class="layout">
+
+  <section class="plan-wrap">
+    <canvas id="plan" width="{{ cols * cell_size }}" height="{{ rows * cell_size }}"></canvas>
+    <div class="plan-hint" id="planHint">Click anywhere on the floor to drop a pin</div>
+  </section>
+
+  <aside class="panel">
+    <div class="panel-block">
+      <div class="eyebrow">01 — Your position</div>
+      <div id="posReadout" class="mono dim">not set</div>
+    </div>
+
+    <div class="panel-block" id="resultBlock">
+      <div class="eyebrow">02 — Nearest exit</div>
+      <div id="resultEmpty" class="dim">Place a pin to calculate a route.</div>
+
+      <div id="resultCard" class="result-card hidden">
+        <div class="result-exit-name" id="exitName">—</div>
+        <div class="result-row">
+          <span class="result-label">Direction</span>
+          <span class="result-value" id="exitDirection">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Distance</span>
+          <span class="result-value mono" id="exitDistance">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Path length</span>
+          <span class="result-value mono" id="exitSteps">—</span>
+        </div>
+      </div>
+
+      <div id="resultError" class="error-msg hidden"></div>
+    </div>
+
+        <div class="panel-block legend">
+      <div class="eyebrow">Legend</div>
+      <div class="legend-row"><span class="swatch swatch-floor"></span> Open floor</div>
+      <div class="legend-row"><span class="swatch swatch-wall"></span> Wall</div>
+      <div class="legend-row"><span class="swatch swatch-exit"></span> Emergency exit</div>
+      <div class="legend-row"><span class="swatch swatch-user"></span> Your position</div>
+      <div class="legend-row"><span class="swatch swatch-door"></span> Door</div>
+    </div>
+
+    <div class="panel-block algo-block">
+      <div class="eyebrow">03 — How it works (BFS)</div>
+
+      <div class="algo-sub">What it does</div>
+      <p class="algo-text">
+        The app models the floor as a grid and runs
+        <strong>Breadth-First Search (BFS)</strong> starting from all
+        exits at once. BFS expands outward one step at a time, so the
+        instant it reaches your pin, it has found the exit that is
+        genuinely closest by walking distance — not straight-line
+        distance through walls.
+      </p>
+
+  
+    </div>
+
+    <button id="clearBtn" class="ghost-btn">Clear pin</button>
+  </aside>
+
+</main>
+
+<script>
+  window.__FLOORPLAN__ = {
+    rows: {{ rows }},
+    cols: {{ cols }},
+    cellSize: {{ cell_size }},
+    grid: {{ grid | tojson }},
+    exits: {{ exits | tojson }}
+  };
+</script>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
