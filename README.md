@@ -266,10 +266,8 @@ The database uses a persistent Docker volume named `mysql_data`.
 
 The `Jenkinsfile` contains the pipeline-as-code configuration used by Jenkins.
 
-
 ```pipeline{
     agent any
-
     stages{
         stage("clone repo"){
             steps{
