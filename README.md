@@ -321,9 +321,9 @@ The current exit records used by the project are:
 
 | Exit Key | Name | Row | Column |
 |---|---|---:|---:|
-| `exit_1` | North Exit | 0 | 10 |
-| `exit_2` | South-East Exit | 13 | 18 |
-| `exit_3` | West Exit | 7 | 0 |
+| `exit_A` | North Exit | 0 | 10 |
+| `exit_B` | South-East Exit | 13 | 18 |
+| `exit_C` | West Exit | 7 | 0 |
 
 The Flask application uses BFS to search from all active exits and determine which exit can be reached with the shortest walkable path.
 
