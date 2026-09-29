@@ -201,20 +201,13 @@ The `Dockerfile` defines the Python environment used for the Flask application c
 
 Typical responsibilities of the file include:
 
-```dockerfile
-FROM python:3.14-slim
-
-WORKDIR /app
-
+```FROM python:3.14-slim
+WORKDIR /Webapp
 COPY requirements.txt .
-
-RUN pip install --no-cache-dir -r requirements.txt
-
+RUN pip install -r requirements.txt
 COPY . .
-
 EXPOSE 5000
-
-CMD ["python", "app.py"]
+CMD ["python","app.py"]
 ```
 
 #### **docker-compose.yml**
@@ -223,29 +216,48 @@ The `docker-compose.yml` file starts the Flask application and MySQL database to
 
 The important project configuration is:
 
-```yaml
-services:
+```services: 
   flaskapp:
     build: .
-    ports:
+    ports: 
       - "5000:5000"
-    environment:
-      DB_HOST: db
+    environment: 
+      DB_HOST: db 
       DB_USER: root
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
-    depends_on:
-      db:
-        condition: service_healthy
 
-  db:
+    depends_on:
+      db: 
+        condition: service_healthy
+    networks: 
+      - three-tier    
+
+
+  db: 
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_DATABASE: ${DB_NAME} 
     volumes:
-      - mysql_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_data:/var/lib/mysql 
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  
+    healthcheck:
+      test: 
+        - "CMD-SHELL"
+        - "mysqladmin ping -h localhost -uroot -p$${DB_PASSWORD} --silent"
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - three-tier     
+ 
+volumes: 
+  mysql_data: 
+
+networks:
+  three-tier:
 ```
 
 The database uses a persistent Docker volume named `mysql_data`.
