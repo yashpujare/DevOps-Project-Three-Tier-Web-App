@@ -266,7 +266,6 @@ The database uses a persistent Docker volume named `mysql_data`.
 
 The `Jenkinsfile` contains the pipeline-as-code configuration used by Jenkins.
 
-The pipeline is responsible for:
 
 ```pipeline{
     agent any
